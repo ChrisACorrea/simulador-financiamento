@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import br.gov.caixaverso.dtos.SimulationInput;
+import br.gov.caixaverso.dtos.SimulationInputDTO;
 import br.gov.caixaverso.entities.Simulation;
 import br.gov.caixaverso.repositories.abstractions.ISimulationRepository;
 import br.gov.caixaverso.valueobjects.MonetaryValue;
@@ -27,7 +27,7 @@ class SimulationServiceTest {
         doNothing().when(repository).persist(any(Simulation.class));
 
         SimulationService service = new SimulationService(repository);
-        SimulationInput input = new SimulationInput(
+        SimulationInputDTO input = new SimulationInputDTO(
                 MonetaryValue.from("1000.00"),
                 Percentage.from("1"),
                 3);

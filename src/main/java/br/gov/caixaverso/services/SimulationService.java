@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import br.gov.caixaverso.dtos.SimulationInput;
+import br.gov.caixaverso.dtos.SimulationInputDTO;
 import br.gov.caixaverso.entities.CalculationMemory;
 import br.gov.caixaverso.entities.Simulation;
 import br.gov.caixaverso.repositories.abstractions.ISimulationRepository;
@@ -26,7 +26,7 @@ public class SimulationService implements ISimulationService {
     }
 
     @Transactional
-    public Simulation simulate(SimulationInput input) {
+    public Simulation simulate(SimulationInputDTO input) {
         Objects.requireNonNull(input, "Dados da simulacao nao podem ser nulos");
 
         List<CalculationMemory> calculationMemories = new ArrayList<>();
