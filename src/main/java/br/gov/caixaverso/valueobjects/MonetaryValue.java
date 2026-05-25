@@ -21,6 +21,7 @@ public class MonetaryValue {
 
     // region Constantes
     private static final String DEFAULT_LOCALE = "pt-BR";
+    public static final MonetaryValue ZERO = new MonetaryValue(BigDecimal.ZERO);
     // endregion
 
     // region Estado
