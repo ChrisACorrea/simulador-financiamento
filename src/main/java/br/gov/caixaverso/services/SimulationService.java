@@ -14,7 +14,6 @@ import br.gov.caixaverso.valueobjects.MonetaryValue;
 import br.gov.caixaverso.valueobjects.Percentage;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class SimulationService implements ISimulationService {
@@ -27,7 +26,6 @@ public class SimulationService implements ISimulationService {
     }
 
     @Override
-    @Transactional
     public SimulationRead simulate(SimulationInputDTO input) {
         Objects.requireNonNull(input, "Dados da simulacao nao podem ser nulos");
 
@@ -63,7 +61,6 @@ public class SimulationService implements ISimulationService {
     }
 
     @Override
-    @Transactional
     public void deleteById(Long id) {
         Objects.requireNonNull(id, "Id da simulacao nao pode ser nulo");
 
