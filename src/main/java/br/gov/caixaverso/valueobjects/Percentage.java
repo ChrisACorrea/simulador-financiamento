@@ -1,5 +1,6 @@
 package br.gov.caixaverso.valueobjects;
 
+import br.gov.caixaverso.exceptions.MonetaryValueException;
 import br.gov.caixaverso.exceptions.PercentageException;
 
 import java.math.BigDecimal;
@@ -152,6 +153,31 @@ public class Percentage {
     }
     // endregion
 
+    // region Operacoes
+    /**
+     * Soma outro valor monetario ao valor atual.
+     *
+     * @param other outro valor monetario
+     * @return novo {@code Percentage} com o resultado da soma
+     */
+    public Percentage add(Percentage other) {
+        validateNotNull(other, "Outro valor percentual");
+        return new Percentage(this.decimalValue.add(other.decimalValue), true);
+    }
+
+    /**
+     * Calcula a potencia do valor atual.
+     *
+     * @param exponent expoente (deve ser maior ou igual a zero)
+     * @return novo {@code Percentage} com o resultado da potencia
+     */
+    public Percentage pow(int exponent) {
+        if (exponent < 0) {
+            throw new PercentageException("Expoente deve ser maior ou igual a 0");
+        }
+        return new Percentage(this.decimalValue.pow(exponent), true);
+    }
+
     // region Formatacao
 
     /**
@@ -206,6 +232,22 @@ public class Percentage {
     // endregion
 
     // region Validacoes e Conversoes Internas
+    /**
+     * Valida se um objeto não é nulo.
+     *
+     * @param value valor a validar
+     * @param label rótulo usado na mensagem de erro
+     * @param <T> tipo do valor
+     * @return o próprio valor, quando válido
+     * @throws PercentageException se o valor for nulo
+     */
+    private static <T> T validateNotNull(T value, String label) {
+        if (value == null) {
+            throw new PercentageException(label + " nao pode ser nulo");
+        }
+        return value;
+    }
+
     /**
      * Valida se um valor monetário/percentual não é nulo e não é negativo.
      *

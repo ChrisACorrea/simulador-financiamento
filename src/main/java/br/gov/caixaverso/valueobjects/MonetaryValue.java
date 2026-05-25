@@ -97,6 +97,17 @@ public class MonetaryValue {
     }
 
     /**
+     * Subtrai outro valor monetario do valor atual.
+     *
+     * @param other outro valor monetario
+     * @return novo {@code MonetaryValue} com o resultado da subtracao
+     */
+    public MonetaryValue subtract(MonetaryValue other) {
+        validateNotNull(other, "Outro valor monetario");
+        return new MonetaryValue(this.value.subtract(other.value));
+    }
+
+    /**
      * Aplica um percentual sobre o valor atual.
      *
      * @param percentage percentual a aplicar

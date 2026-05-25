@@ -53,14 +53,12 @@ public class CalculationMemory extends EntityBase {
      * @param month          mes de referencia do item
      * @param initialBalance saldo no inicio do mes
      * @param interestAmount valor de juros aplicado no mes
-     * @param finalBalance   saldo ao fim do mes
      */
-    public CalculationMemory(Integer month, MonetaryValue initialBalance, MonetaryValue interestAmount,
-            MonetaryValue finalBalance) {
+    public CalculationMemory(Integer month, MonetaryValue initialBalance, MonetaryValue interestAmount) {
         this.month = Objects.requireNonNull(month, "Mes nao pode ser nulo");
         this.initialBalance = Objects.requireNonNull(initialBalance, "Saldo inicial nao pode ser nulo");
         this.interestAmount = Objects.requireNonNull(interestAmount, "Juro nao pode ser nulo");
-        this.finalBalance = Objects.requireNonNull(finalBalance, "Saldo final nao pode ser nulo");
+        this.finalBalance = initialBalance.add(interestAmount);
     }
     // endregion
 

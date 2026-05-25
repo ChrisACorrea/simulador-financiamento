@@ -21,14 +21,12 @@ class SimulationTest {
         CalculationMemory month1 = new CalculationMemory(
                 1,
                 MonetaryValue.from("1000.00"),
-                MonetaryValue.from("10.00"),
-                MonetaryValue.from("1010.00"));
+                MonetaryValue.from("10.00"));
 
         CalculationMemory month2 = new CalculationMemory(
                 2,
                 MonetaryValue.from("1010.00"),
-                MonetaryValue.from("10.10"),
-                MonetaryValue.from("1020.10"));
+                MonetaryValue.from("10.10"));
 
         Simulation simulation = new Simulation(List.of(month2, month1));
 
@@ -43,8 +41,7 @@ class SimulationTest {
         CalculationMemory memory = new CalculationMemory(
                 1,
                 MonetaryValue.from("1000.00"),
-                MonetaryValue.from("10.00"),
-                MonetaryValue.from("1010.00"));
+                MonetaryValue.from("10.00"));
 
         Simulation simulation = new Simulation(List.of(memory));
 
@@ -76,8 +73,7 @@ class SimulationTest {
         memories.add(new CalculationMemory(
                 1,
                 MonetaryValue.from("1000.00"),
-                MonetaryValue.from("10.00"),
-                MonetaryValue.from("1010.00")));
+                MonetaryValue.from("10.00")));
         memories.add(null);
 
         NullPointerException ex = assertThrows(NullPointerException.class,
@@ -92,14 +88,12 @@ class SimulationTest {
         CalculationMemory monthOne = new CalculationMemory(
                 1,
                 MonetaryValue.from("1000.00"),
-                MonetaryValue.from("10.00"),
-                MonetaryValue.from("1010.00"));
+                MonetaryValue.from("10.00"));
 
         CalculationMemory monthTwo = new CalculationMemory(
                 2,
                 MonetaryValue.from("1010.00"),
-                MonetaryValue.from("10.10"),
-                MonetaryValue.from("1020.10"));
+                MonetaryValue.from("10.10"));
 
         Simulation simulation = new Simulation(List.of(monthOne));
 

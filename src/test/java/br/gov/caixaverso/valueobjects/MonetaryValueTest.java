@@ -53,6 +53,17 @@ class MonetaryValueTest {
     }
 
     @Test
+    @DisplayName("Deve subtrair dois valores monetarios")
+    void shouldSubtractTwoMonetaryValues() {
+        MonetaryValue a = MonetaryValue.from("10");
+        MonetaryValue b = MonetaryValue.from("2.5");
+
+        MonetaryValue result = a.subtract(b);
+
+        assertEquals(new BigDecimal("7.5"), result.getValue());
+    }
+
+    @Test
     @DisplayName("Deve somar valor base com varargs")
     void shouldAddWithVarargs() {
         MonetaryValue result = MonetaryValue.add(
@@ -151,6 +162,15 @@ class MonetaryValueTest {
     void shouldThrowWhenAddingNullMonetaryValue() {
         MonetaryValueException ex = assertThrows(MonetaryValueException.class,
                 () -> MonetaryValue.from("10").add(null));
+
+        assertEquals("Outro valor monetario nao pode ser nulo", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve lançar excecao ao subtrair com outro valor nulo")
+    void shouldThrowWhenSubtractingNullMonetaryValue() {
+        MonetaryValueException ex = assertThrows(MonetaryValueException.class,
+                () -> MonetaryValue.from("10").subtract(null));
 
         assertEquals("Outro valor monetario nao pode ser nulo", ex.getMessage());
     }

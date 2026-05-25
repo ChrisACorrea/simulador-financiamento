@@ -6,5 +6,6 @@
     ],
     "chat.tools.terminal.autoApprove": {
         ".\\mvnw.cmd": true
-    }
+    },
+    "java.debug.settings.onBuildFailureProceed": true
 }

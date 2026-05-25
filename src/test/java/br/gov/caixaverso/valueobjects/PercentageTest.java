@@ -105,6 +105,49 @@ class PercentageTest {
     }
 
     @Test
+    @DisplayName("Deve somar dois percentuais")
+    void shouldAddPercentages() {
+        Percentage left = Percentage.from("10");
+        Percentage right = Percentage.from("5");
+
+        Percentage result = left.add(right);
+
+        assertEquals(new BigDecimal("0.15"), result.getDecimalValue());
+        assertEquals(new BigDecimal("15.00"), result.getValue());
+    }
+
+    @Test
+    @DisplayName("Deve lancar excecao ao somar percentual nulo")
+    void shouldThrowWhenAddReceivesNull() {
+        Percentage percentage = Percentage.from("10");
+
+        PercentageException ex = assertThrows(PercentageException.class, () -> percentage.add(null));
+
+        assertEquals("Outro valor percentual nao pode ser nulo", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve calcular potencia de percentual")
+    void shouldCalculatePowerOfPercentage() {
+        Percentage percentage = Percentage.from("10");
+
+        Percentage result = percentage.pow(2);
+
+        assertEquals(new BigDecimal("0.01"), result.getDecimalValue());
+        assertEquals(new BigDecimal("1.00"), result.getValue());
+    }
+
+    @Test
+    @DisplayName("Deve lancar excecao para expoente negativo")
+    void shouldThrowWhenPowerReceivesNegativeExponent() {
+        Percentage percentage = Percentage.from("10");
+
+        PercentageException ex = assertThrows(PercentageException.class, () -> percentage.pow(-1));
+
+        assertEquals("Expoente deve ser maior ou igual a 0", ex.getMessage());
+    }
+
+    @Test
     @DisplayName("Deve lançar exceção ao receber percentual nulo em String")
     void shouldThrowWhenFromStringReceivesNull() {
         PercentageException ex = assertThrows(PercentageException.class, () -> Percentage.from((String) null));
