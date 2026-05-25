@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import br.gov.caixaverso.dtos.SimulationInputDTO;
+import br.gov.caixaverso.dtos.SimulationRead;
 import br.gov.caixaverso.entities.CalculationMemory;
 import br.gov.caixaverso.entities.Simulation;
 import br.gov.caixaverso.repositories.abstractions.ISimulationRepository;
@@ -25,8 +26,9 @@ public class SimulationService implements ISimulationService {
         this.simulationRepository = simulationRepository;
     }
 
+    @Override
     @Transactional
-    public Simulation simulate(SimulationInputDTO input) {
+    public SimulationRead simulate(SimulationInputDTO input) {
         Objects.requireNonNull(input, "Dados da simulacao nao podem ser nulos");
 
         List<CalculationMemory> calculationMemories = new ArrayList<>();
@@ -42,7 +44,33 @@ public class SimulationService implements ISimulationService {
         Simulation simulation = new Simulation(calculationMemories);
         simulationRepository.persist(simulation);
 
-        return simulation;
+        return SimulationRead.fromEntity(simulation);
+    }
+
+    @Override
+    public List<SimulationRead> listAll() {
+        return SimulationRead.fromEntityList(simulationRepository.listAll());
+    }
+
+    @Override
+    public SimulationRead getById(Long id) {
+        Objects.requireNonNull(id, "Id da simulacao nao pode ser nulo");
+
+        Simulation simulation = simulationRepository.findByIdOptional(id)
+                .orElseThrow(() -> new IllegalArgumentException("Simulacao nao encontrada para o id: " + id));
+
+        return SimulationRead.fromEntity(simulation);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        Objects.requireNonNull(id, "Id da simulacao nao pode ser nulo");
+
+        boolean deleted = simulationRepository.deleteById(id);
+        if (!deleted) {
+            throw new IllegalArgumentException("Simulacao nao encontrada para o id: " + id);
+        }
     }
 
     private MonetaryValue calculateMonthlyInterestAmount(MonetaryValue initialBalance, Percentage monthlyRate) {
