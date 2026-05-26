@@ -44,6 +44,27 @@ Gerados apos `clean verify`:
 - `target/site/jacoco/jacoco.xml`
 - `target/site/jacoco/index.html`
 
+## Scripts de cobertura
+
+Atalhos em PowerShell para visualizar a cobertura apos gerar o relatorio:
+
+```powershell
+.\scripts\coverage-html.ps1
+.\scripts\coverage-summary.ps1
+```
+
+Para mandar o script gerar o relatorio antes de abrir/exibir:
+
+```powershell
+.\scripts\coverage-html.ps1 -Generate
+.\scripts\coverage-summary.ps1 -Generate
+```
+
+Comportamento dos scripts:
+
+- `coverage-html.ps1`: abre `target/site/jacoco/index.html` no navegador padrao
+- `coverage-summary.ps1`: mostra no terminal o resumo agregado de cobertura de linhas e branches
+
 ## Observacoes de persistencia
 
 - Banco: H2 embutido em memoria
