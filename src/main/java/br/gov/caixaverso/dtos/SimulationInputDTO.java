@@ -5,6 +5,7 @@ import br.gov.caixaverso.valueobjects.Percentage;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+@Schema(name = "EntradaSimulacao")
 public record SimulationInputDTO(
         @Schema(description = "Valor principal da simulacao", implementation = String.class, type = SchemaType.STRING)
         MonetaryValue valorInicial,

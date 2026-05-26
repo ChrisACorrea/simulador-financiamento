@@ -3,7 +3,9 @@ package br.gov.caixaverso.dtos;
 import java.util.List;
 
 import br.gov.caixaverso.entities.Simulation;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+@Schema(name = "LeituraSimulacao")
 public record SimulationRead(
         Long id,
         String valorInicial,

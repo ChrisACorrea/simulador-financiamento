@@ -154,21 +154,61 @@ class SimulationResourceIntegrationTest {
                 .statusCode(400);
     }
 
-        @Test
-        @DisplayName("Deve expor especificacao OpenAPI com campos do payload de entrada")
-        void shouldExposeOpenApiWithSimulationInputFields() {
-                given()
-                                .when().get("/openapi")
-                                .then()
-                                .statusCode(200)
-                                .body(containsString("/simulacoes:"))
-                                .body(containsString("SimulationInputDTO"))
-                                .body(containsString("valorInicial"))
-                                .body(containsString("taxaJurosMensal"))
-                                .body(containsString("prazoMeses"))
-                                .body(containsString("\"201\""))
-                                .body(containsString("\"400\""));
-        }
+    @Test
+    @DisplayName("Deve retornar 400 quando taxa de juros mensal for invalida")
+    void shouldReturnBadRequestWhenMonthlyInterestRateIsInvalid() {
+        String payload = """
+                {
+                        "valorInicial": "20000.00",
+                        "taxaJurosMensal": "10.a0",
+                        "prazoMeses": 10
+                }
+                """;
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(payload)
+                .when().post("/simulacoes")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo("Valor percentual invalido: 10.a0"));
+    }
+
+    @Test
+    @DisplayName("Deve retornar 400 quando prazo em meses vier com valor nao numerico")
+    void shouldReturnBadRequestWhenTermMonthsIsNotNumeric() {
+        String payload = """
+                {
+                  "valorInicial": "20000.00",
+                  "taxaJurosMensal": "10.00",
+                  "prazoMeses": 1b
+                }
+                """;
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(payload)
+                .when().post("/simulacoes")
+                .then()
+                .statusCode(400)
+                .body("message", equalTo("Payload JSON invalido"));
+    }
+
+    @Test
+    @DisplayName("Deve expor especificacao OpenAPI com campos do payload de entrada")
+    void shouldExposeOpenApiWithSimulationInputFields() {
+        given()
+                .when().get("/openapi")
+                .then()
+                .statusCode(200)
+                .body(containsString("/simulacoes:"))
+                .body(containsString("EntradaSimulacao"))
+                .body(containsString("valorInicial"))
+                .body(containsString("taxaJurosMensal"))
+                .body(containsString("prazoMeses"))
+                .body(containsString("\"201\""))
+                .body(containsString("\"400\""));
+    }
 
     private Long createSimulation(String valorInicial, String taxaJurosMensal, Integer prazoMeses) {
         Map<String, Object> payload = Map.of(
