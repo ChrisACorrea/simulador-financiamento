@@ -16,11 +16,11 @@ public record SimulationRead(
     public static SimulationRead fromEntity(Simulation simulation) {
         return new SimulationRead(
                 simulation.getId(),
-                simulation.getInitialAmount().getValue().toPlainString(),
-                simulation.getMonthlyInterestRate().getValue().stripTrailingZeros().toPlainString(),
+            simulation.getInitialAmount().toNumericString(),
+            simulation.getMonthlyInterestRate().toNumericString(),
                 simulation.getTermMonths(),
-                simulation.getTotalFinalAmount().toString(),
-                simulation.getTotalInterestAmount().toString(),
+            simulation.getTotalFinalAmount().toNumericString(),
+            simulation.getTotalInterestAmount().toNumericString(),
                 CalculationMemoryDTO.fromEntityList(simulation.getCalculationMemories()));
     }
 

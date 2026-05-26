@@ -129,8 +129,8 @@ class SimulationResourceTest {
             "1000.00",
             "1",
             3,
-                "R$ 1.030,30",
-                "R$ 30,30",
-                List.of(new CalculationMemoryDTO(1, "R$ 1.000,00", "R$ 10,00", "R$ 1.010,00")));
+                "1030.30",
+                "30.30",
+                List.of(new CalculationMemoryDTO(1, "1000.00", "10.00", "1010.00")));
     }
 }

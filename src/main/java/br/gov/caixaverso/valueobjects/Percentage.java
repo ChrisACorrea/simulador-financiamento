@@ -229,6 +229,26 @@ public class Percentage {
         String format = "%." + validatedScale + "f";
         return String.format(Locale.forLanguageTag(DEFAULT_LOCALE), format, scaledValue);
     }
+
+    /**
+     * Retorna o valor percentual em formato numerico sem localizacao.
+     *
+     * @return valor numerico, ex: 1.25
+     */
+    public String toNumericString() {
+        return getValue().stripTrailingZeros().toPlainString();
+    }
+
+    /**
+     * Retorna o valor percentual em formato numerico sem localizacao com escala definida.
+     *
+     * @param decimalPlaces numero de casas decimais
+     * @return valor numerico com escala definida
+     */
+    public String toNumericString(int decimalPlaces) {
+        int validatedDecimalPlaces = validateNonNegative(decimalPlaces, "Casas decimais");
+        return getValue().setScale(validatedDecimalPlaces, RoundingMode.HALF_UP).toPlainString();
+    }
     // endregion
 
     // region Validacoes e Conversoes Internas

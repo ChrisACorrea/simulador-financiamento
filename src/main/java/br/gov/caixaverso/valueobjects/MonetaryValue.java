@@ -3,6 +3,7 @@ package br.gov.caixaverso.valueobjects;
 import br.gov.caixaverso.exceptions.MonetaryValueException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -175,6 +176,26 @@ public class MonetaryValue {
     public String toString() {
         return String.format(Locale.forLanguageTag(DEFAULT_LOCALE), "R$ %,.2f", value);
     }
+
+    /**
+     * Retorna o valor em formato numerico sem localizacao e com 2 casas decimais.
+     *
+     * @return valor numerico, ex: 1234.56
+     */
+    public String toNumericString() {
+        return toNumericString(2);
+    }
+
+    /**
+     * Retorna o valor em formato numerico sem localizacao e com escala definida.
+     *
+     * @param scale numero de casas decimais
+     * @return valor numerico, ex: 1234.5600
+     */
+    public String toNumericString(int scale) {
+        int validatedScale = validateNonNegative(scale, "Escala");
+        return value.setScale(validatedScale, RoundingMode.HALF_UP).toPlainString();
+    }
     // endregion
 
     // region Validacoes e Conversoes Internas
@@ -195,6 +216,13 @@ public class MonetaryValue {
             throw new MonetaryValueException(label + " nao pode ser nulo");
         }
 
+        return value;
+    }
+
+    private static int validateNonNegative(int value, String label) {
+        if (value < 0) {
+            throw new MonetaryValueException(label + " deve ser maior ou igual a 0");
+        }
         return value;
     }
 

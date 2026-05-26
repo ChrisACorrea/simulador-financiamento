@@ -13,9 +13,9 @@ public record CalculationMemoryDTO(
     public static CalculationMemoryDTO fromEntity(CalculationMemory calculationMemory) {
         return new CalculationMemoryDTO(
                 calculationMemory.getMonth(),
-                calculationMemory.getInitialBalance().toString(),
-                calculationMemory.getInterestAmount().toString(),
-                calculationMemory.getFinalBalance().toString());
+                calculationMemory.getInitialBalance().toNumericString(),
+                calculationMemory.getInterestAmount().toNumericString(),
+                calculationMemory.getFinalBalance().toNumericString());
     }
 
     public static List<CalculationMemoryDTO> fromEntityList(List<CalculationMemory> calculationMemories) {

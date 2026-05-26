@@ -44,24 +44,24 @@ class SimulationServiceTest {
         assertEquals("1000.00", result.valorInicial());
         assertEquals("1", result.taxaJurosMensal());
         assertEquals(3, result.prazoMeses());
-        assertEquals("R$ 1.030,30", result.valorTotalFinal());
-        assertEquals("R$ 30,30", result.valorTotalJuros());
+        assertEquals("1030.30", result.valorTotalFinal());
+        assertEquals("30.30", result.valorTotalJuros());
         assertEquals(3, result.calculos().size());
 
         assertEquals(1, result.calculos().get(0).mes());
-        assertEquals("R$ 1.000,00", result.calculos().get(0).saldoInicial());
-        assertEquals("R$ 10,00", result.calculos().get(0).juro());
-        assertEquals("R$ 1.010,00", result.calculos().get(0).saldoFinal());
+        assertEquals("1000.00", result.calculos().get(0).saldoInicial());
+        assertEquals("10.00", result.calculos().get(0).juro());
+        assertEquals("1010.00", result.calculos().get(0).saldoFinal());
 
         assertEquals(2, result.calculos().get(1).mes());
-        assertEquals("R$ 1.010,00", result.calculos().get(1).saldoInicial());
-        assertEquals("R$ 10,10", result.calculos().get(1).juro());
-        assertEquals("R$ 1.020,10", result.calculos().get(1).saldoFinal());
+        assertEquals("1010.00", result.calculos().get(1).saldoInicial());
+        assertEquals("10.10", result.calculos().get(1).juro());
+        assertEquals("1020.10", result.calculos().get(1).saldoFinal());
 
         assertEquals(3, result.calculos().get(2).mes());
-        assertEquals("R$ 1.020,10", result.calculos().get(2).saldoInicial());
-        assertEquals("R$ 10,20", result.calculos().get(2).juro());
-        assertEquals("R$ 1.030,30", result.calculos().get(2).saldoFinal());
+        assertEquals("1020.10", result.calculos().get(2).saldoInicial());
+        assertEquals("10.20", result.calculos().get(2).juro());
+        assertEquals("1030.30", result.calculos().get(2).saldoFinal());
 
         verify(repository).persist(any(Simulation.class));
     }
@@ -145,13 +145,13 @@ class SimulationServiceTest {
         assertEquals("1000.00", result.get(0).valorInicial());
         assertEquals("1", result.get(0).taxaJurosMensal());
         assertEquals(2, result.get(0).prazoMeses());
-        assertEquals("R$ 1.020,10", result.get(0).valorTotalFinal());
-        assertEquals("R$ 20,10", result.get(0).valorTotalJuros());
+        assertEquals("1020.10", result.get(0).valorTotalFinal());
+        assertEquals("20.10", result.get(0).valorTotalJuros());
         assertEquals("2000.00", result.get(1).valorInicial());
         assertEquals("2", result.get(1).taxaJurosMensal());
         assertEquals(2, result.get(1).prazoMeses());
-        assertEquals("R$ 2.080,80", result.get(1).valorTotalFinal());
-        assertEquals("R$ 80,80", result.get(1).valorTotalJuros());
+        assertEquals("2080.80", result.get(1).valorTotalFinal());
+        assertEquals("80.80", result.get(1).valorTotalJuros());
         verify(repository).listAll();
     }
 
@@ -169,8 +169,8 @@ class SimulationServiceTest {
         assertEquals("1000.00", result.valorInicial());
         assertEquals("1", result.taxaJurosMensal());
         assertEquals(2, result.prazoMeses());
-        assertEquals("R$ 1.020,10", result.valorTotalFinal());
-        assertEquals("R$ 20,10", result.valorTotalJuros());
+        assertEquals("1020.10", result.valorTotalFinal());
+        assertEquals("20.10", result.valorTotalJuros());
         assertEquals(2, result.calculos().size());
         verify(repository).findByIdOptional(1L);
     }

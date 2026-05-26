@@ -105,6 +105,15 @@ class PercentageTest {
     }
 
     @Test
+    @DisplayName("Deve formatar percentual em string numerica")
+    void shouldFormatPercentageAsNumericString() {
+        Percentage percentage = Percentage.from("1.00");
+
+        assertEquals("1", percentage.toNumericString());
+        assertEquals("1.0000", percentage.toNumericString(4));
+    }
+
+    @Test
     @DisplayName("Deve somar dois percentuais")
     void shouldAddPercentages() {
         Percentage left = Percentage.from("10");

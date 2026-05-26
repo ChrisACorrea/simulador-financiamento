@@ -113,6 +113,15 @@ class MonetaryValueTest {
         assertEquals("R$ 1.234,56", monetaryValue.toString());
     }
 
+    @Test
+    @DisplayName("Deve formatar valor monetario em string numerica")
+    void shouldFormatMonetaryValueAsNumericString() {
+        MonetaryValue monetaryValue = MonetaryValue.from("1234.56");
+
+        assertEquals("1234.56", monetaryValue.toNumericString());
+        assertEquals("1234.5600", monetaryValue.toNumericString(4));
+    }
+
     @ParameterizedTest(name = "deve rejeitar entrada textual invalida: {0}")
     @DisplayName("Deve lançar excecao para string invalida")
     @ValueSource(strings = { "abc", "10,5", "1 0" })
@@ -191,5 +200,14 @@ class MonetaryValueTest {
                 () -> MonetaryValue.add(MonetaryValue.from("10"), (List<MonetaryValue>) null));
 
         assertEquals("Colecao de valores monetarios nao pode ser nulo", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve lançar excecao para escala negativa na formatacao numerica")
+    void shouldThrowWhenNumericFormatScaleIsNegative() {
+        MonetaryValueException ex = assertThrows(MonetaryValueException.class,
+                () -> MonetaryValue.from("10").toNumericString(-1));
+
+        assertEquals("Escala deve ser maior ou igual a 0", ex.getMessage());
     }
 }

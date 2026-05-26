@@ -54,13 +54,13 @@ class SimulationResourceIntegrationTest {
                 .body("valorInicial", equalTo("1000.00"))
                 .body("taxaJurosMensal", equalTo("1"))
                 .body("prazoMeses", equalTo(3))
-                .body("valorTotalFinal", equalTo("R$ 1.030,30"))
-                .body("valorTotalJuros", equalTo("R$ 30,30"))
+                .body("valorTotalFinal", equalTo("1030.30"))
+                .body("valorTotalJuros", equalTo("30.30"))
                 .body("calculos", hasSize(3))
                 .body("calculos[0].mes", equalTo(1))
-                .body("calculos[0].saldoInicial", equalTo("R$ 1.000,00"))
-                .body("calculos[0].juro", equalTo("R$ 10,00"))
-                .body("calculos[0].saldoFinal", equalTo("R$ 1.010,00"));
+                .body("calculos[0].saldoInicial", equalTo("1000.00"))
+                .body("calculos[0].juro", equalTo("10.00"))
+                .body("calculos[0].saldoFinal", equalTo("1010.00"));
     }
 
     @Test
