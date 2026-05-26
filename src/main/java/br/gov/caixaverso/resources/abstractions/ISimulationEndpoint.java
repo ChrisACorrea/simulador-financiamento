@@ -28,9 +28,9 @@ public interface ISimulationEndpoint {
 
     @POST
     @Operation(summary = "Cria uma nova simulacao")
-    @APIResponse(responseCode = "200", description = "Simulacao criada com sucesso", content = @Content(schema = @Schema(implementation = SimulationRead.class)))
+    @APIResponse(responseCode = "201", description = "Simulacao criada com sucesso", content = @Content(schema = @Schema(implementation = SimulationRead.class)))
     @APIResponse(responseCode = "400", description = "Dados de entrada invalidos")
-    SimulationRead simulate(
+    Response simulate(
             @RequestBody(required = true, description = "Parametros de entrada da simulacao")
             SimulationInputDTO input);
 

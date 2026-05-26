@@ -37,9 +37,10 @@ class SimulationResourceTest {
         SimulationRead expected = createSimulationRead(1L);
         when(service.simulate(input)).thenReturn(expected);
 
-        SimulationRead result = resource.simulate(input);
+        Response response = resource.simulate(input);
 
-        assertSame(expected, result);
+        assertEquals(201, response.getStatus());
+        assertSame(expected, response.getEntity());
         verify(service).simulate(input);
     }
 
@@ -125,6 +126,9 @@ class SimulationResourceTest {
     private static SimulationRead createSimulationRead(Long id) {
         return new SimulationRead(
                 id,
+            "1000.00",
+            "1",
+            3,
                 "R$ 1.030,30",
                 "R$ 30,30",
                 List.of(new CalculationMemoryDTO(1, "R$ 1.000,00", "R$ 10,00", "R$ 1.010,00")));

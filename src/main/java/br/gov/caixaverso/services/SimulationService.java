@@ -28,6 +28,12 @@ public class SimulationService implements ISimulationService {
     @Override
     public SimulationRead simulate(SimulationInputDTO input) {
         Objects.requireNonNull(input, "Dados da simulacao nao podem ser nulos");
+        Objects.requireNonNull(input.valorInicial(), "Valor inicial nao pode ser nulo");
+        Objects.requireNonNull(input.taxaJurosMensal(), "Taxa de juros mensal nao pode ser nula");
+        Objects.requireNonNull(input.prazoMeses(), "Prazo em meses nao pode ser nulo");
+        if (input.prazoMeses() <= 0) {
+            throw new IllegalArgumentException("Prazo em meses deve ser maior que 0");
+        }
 
         List<CalculationMemory> calculationMemories = new ArrayList<>();
 
@@ -39,7 +45,11 @@ public class SimulationService implements ISimulationService {
             initialBalance = initialBalance.add(interestAmount);
         }
 
-        Simulation simulation = new Simulation(calculationMemories);
+        Simulation simulation = new Simulation(
+            input.valorInicial(),
+            input.taxaJurosMensal(),
+            input.prazoMeses(),
+            calculationMemories);
         simulationRepository.persist(simulation);
 
         return SimulationRead.fromEntity(simulation);

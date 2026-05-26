@@ -1,6 +1,7 @@
 package br.gov.caixaverso.resources;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
@@ -50,6 +51,9 @@ class SimulationResourceIntegrationTest {
                 .then()
                 .statusCode(200)
                 .body("id", equalTo(simulationId.intValue()))
+                .body("valorInicial", equalTo("1000.00"))
+                .body("taxaJurosMensal", equalTo("1"))
+                .body("prazoMeses", equalTo(3))
                 .body("valorTotalFinal", equalTo("R$ 1.030,30"))
                 .body("valorTotalJuros", equalTo("R$ 30,30"))
                 .body("calculos", hasSize(3))
@@ -113,6 +117,59 @@ class SimulationResourceIntegrationTest {
                 .statusCode(400);
     }
 
+    @Test
+    @DisplayName("Deve retornar 400 quando prazo em meses for invalido")
+    void shouldReturnBadRequestWhenTermMonthsIsInvalid() {
+        String payload = """
+                {
+                  \"valorInicial\": \"1000.00\",
+                  \"taxaJurosMensal\": \"1\",
+                  \"prazoMeses\": 0
+                }
+                """;
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(payload)
+                .when().post("/simulacoes")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @DisplayName("Deve retornar 400 quando campo obrigatorio estiver ausente")
+    void shouldReturnBadRequestWhenRequiredFieldIsMissing() {
+        String payload = """
+                {
+                  \"valorInicial\": \"1000.00\",
+                  \"prazoMeses\": 12
+                }
+                """;
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(payload)
+                .when().post("/simulacoes")
+                .then()
+                .statusCode(400);
+    }
+
+        @Test
+        @DisplayName("Deve expor especificacao OpenAPI com campos do payload de entrada")
+        void shouldExposeOpenApiWithSimulationInputFields() {
+                given()
+                                .when().get("/openapi")
+                                .then()
+                                .statusCode(200)
+                                .body(containsString("/simulacoes:"))
+                                .body(containsString("SimulationInputDTO"))
+                                .body(containsString("valorInicial"))
+                                .body(containsString("taxaJurosMensal"))
+                                .body(containsString("prazoMeses"))
+                                .body(containsString("\"201\""))
+                                .body(containsString("\"400\""));
+        }
+
     private Long createSimulation(String valorInicial, String taxaJurosMensal, Integer prazoMeses) {
         Map<String, Object> payload = Map.of(
                 "valorInicial", valorInicial,
@@ -124,7 +181,7 @@ class SimulationResourceIntegrationTest {
                 .body(payload)
                 .when().post("/simulacoes")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .body("id", notNullValue())
                 .extract()
                 .response();

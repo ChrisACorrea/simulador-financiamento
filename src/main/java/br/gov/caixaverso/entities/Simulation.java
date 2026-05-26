@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import br.gov.caixaverso.entities.abstractions.EntityBase;
 import br.gov.caixaverso.valueobjects.MonetaryValue;
+import br.gov.caixaverso.valueobjects.Percentage;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +33,15 @@ import jakarta.persistence.Table;
 public class Simulation extends EntityBase {
 
     // region Estado Persistido
+    @Column(name = "INITIAL_AMOUNT", insertable = true, updatable = false, nullable = false, precision = 14, scale = 2)
+    private MonetaryValue initialAmount;
+
+    @Column(name = "MONTHLY_INTEREST_RATE", insertable = true, updatable = false, nullable = false, precision = 8, scale = 4)
+    private Percentage monthlyInterestRate;
+
+    @Column(name = "TERM_MONTHS", insertable = true, updatable = false, nullable = false)
+    private Integer termMonths;
+
     @Column(name = "TOTAL_FINAL_AMOUNT", insertable = true, updatable = false, nullable = false, precision = 14, scale = 2)
     private MonetaryValue totalFinalAmount;
 
@@ -52,7 +62,15 @@ public class Simulation extends EntityBase {
      *
      * @param memories lista de memoria de calculo (nao nula e nao vazia)
      */
-    public Simulation(Collection<CalculationMemory> memories) {
+    public Simulation(MonetaryValue initialAmount, Percentage monthlyInterestRate, Integer termMonths,
+            Collection<CalculationMemory> memories) {
+        this.initialAmount = Objects.requireNonNull(initialAmount, "Valor inicial nao pode ser nulo");
+        this.monthlyInterestRate = Objects.requireNonNull(monthlyInterestRate, "Taxa de juros mensal nao pode ser nula");
+        this.termMonths = Objects.requireNonNull(termMonths, "Prazo em meses nao pode ser nulo");
+        if (termMonths <= 0) {
+            throw new IllegalArgumentException("Prazo em meses deve ser maior que 0");
+        }
+
         Objects.requireNonNull(memories, "Lista de memoria de calculo nao pode ser nula");
         if (memories.isEmpty()) {
             throw new IllegalArgumentException("Lista de memoria de calculo nao pode ser vazia");
@@ -73,6 +91,18 @@ public class Simulation extends EntityBase {
     // region Acessores
     public MonetaryValue getTotalFinalAmount() {
         return totalFinalAmount;
+    }
+
+    public MonetaryValue getInitialAmount() {
+        return initialAmount;
+    }
+
+    public Percentage getMonthlyInterestRate() {
+        return monthlyInterestRate;
+    }
+
+    public Integer getTermMonths() {
+        return termMonths;
     }
 
     public MonetaryValue getTotalInterestAmount() {

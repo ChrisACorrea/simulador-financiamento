@@ -39,6 +39,9 @@ class SimulationServiceTest {
         SimulationRead result = service.simulate(input);
 
         assertEquals(null, result.id());
+        assertEquals("1000.00", result.valorInicial());
+        assertEquals("1", result.taxaJurosMensal());
+        assertEquals(3, result.prazoMeses());
         assertEquals("R$ 1.030,30", result.valorTotalFinal());
         assertEquals("R$ 30,30", result.valorTotalJuros());
         assertEquals(3, result.calculos().size());
@@ -59,6 +62,58 @@ class SimulationServiceTest {
         assertEquals("R$ 1.030,30", result.calculos().get(2).saldoFinal());
 
         verify(repository).persist(any(Simulation.class));
+    }
+
+    @Test
+    @DisplayName("Deve lancar excecao quando valor inicial for nulo")
+    void shouldThrowWhenInitialAmountIsNull() {
+        ISimulationRepository repository = org.mockito.Mockito.mock(ISimulationRepository.class);
+        SimulationService service = new SimulationService(repository);
+
+        SimulationInputDTO input = new SimulationInputDTO(null, Percentage.from("1"), 12);
+
+        NullPointerException ex = assertThrows(NullPointerException.class, () -> service.simulate(input));
+
+        assertEquals("Valor inicial nao pode ser nulo", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve lancar excecao quando taxa de juros mensal for nula")
+    void shouldThrowWhenMonthlyInterestRateIsNull() {
+        ISimulationRepository repository = org.mockito.Mockito.mock(ISimulationRepository.class);
+        SimulationService service = new SimulationService(repository);
+
+        SimulationInputDTO input = new SimulationInputDTO(MonetaryValue.from("1000"), null, 12);
+
+        NullPointerException ex = assertThrows(NullPointerException.class, () -> service.simulate(input));
+
+        assertEquals("Taxa de juros mensal nao pode ser nula", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve lancar excecao quando prazo em meses for nulo")
+    void shouldThrowWhenTermMonthsIsNull() {
+        ISimulationRepository repository = org.mockito.Mockito.mock(ISimulationRepository.class);
+        SimulationService service = new SimulationService(repository);
+
+        SimulationInputDTO input = new SimulationInputDTO(MonetaryValue.from("1000"), Percentage.from("1"), null);
+
+        NullPointerException ex = assertThrows(NullPointerException.class, () -> service.simulate(input));
+
+        assertEquals("Prazo em meses nao pode ser nulo", ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve lancar excecao quando prazo em meses for menor ou igual a zero")
+    void shouldThrowWhenTermMonthsIsZeroOrNegative() {
+        ISimulationRepository repository = org.mockito.Mockito.mock(ISimulationRepository.class);
+        SimulationService service = new SimulationService(repository);
+
+        SimulationInputDTO input = new SimulationInputDTO(MonetaryValue.from("1000"), Percentage.from("1"), 0);
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.simulate(input));
+
+        assertEquals("Prazo em meses deve ser maior que 0", ex.getMessage());
     }
 
     @Test
@@ -85,8 +140,14 @@ class SimulationServiceTest {
         List<SimulationRead> result = service.listAll();
 
         assertEquals(2, result.size());
+        assertEquals("1000.00", result.get(0).valorInicial());
+        assertEquals("1", result.get(0).taxaJurosMensal());
+        assertEquals(2, result.get(0).prazoMeses());
         assertEquals("R$ 1.020,10", result.get(0).valorTotalFinal());
         assertEquals("R$ 20,10", result.get(0).valorTotalJuros());
+        assertEquals("2000.00", result.get(1).valorInicial());
+        assertEquals("2", result.get(1).taxaJurosMensal());
+        assertEquals(2, result.get(1).prazoMeses());
         assertEquals("R$ 2.080,80", result.get(1).valorTotalFinal());
         assertEquals("R$ 80,80", result.get(1).valorTotalJuros());
         verify(repository).listAll();
@@ -103,6 +164,9 @@ class SimulationServiceTest {
 
         SimulationRead result = service.getById(1L);
 
+        assertEquals("1000.00", result.valorInicial());
+        assertEquals("1", result.taxaJurosMensal());
+        assertEquals(2, result.prazoMeses());
         assertEquals("R$ 1.020,10", result.valorTotalFinal());
         assertEquals("R$ 20,10", result.valorTotalJuros());
         assertEquals(2, result.calculos().size());
@@ -180,6 +244,10 @@ class SimulationServiceTest {
             initialBalance = finalBalance;
         }
 
-        return new Simulation(calculationMemories);
+        return new Simulation(
+            MonetaryValue.from(initialAmount),
+            Percentage.from(monthlyRate),
+            months,
+            calculationMemories);
     }
 }

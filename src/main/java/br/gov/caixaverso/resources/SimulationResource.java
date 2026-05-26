@@ -25,12 +25,17 @@ public class SimulationResource implements ISimulationEndpoint {
 
 	@Transactional
 	@Override
-	public SimulationRead simulate(SimulationInputDTO input) {
+	public Response simulate(SimulationInputDTO input) {
 		if (input == null) {
 			throw new BadRequestException("Dados da simulacao nao podem ser nulos");
 		}
 
-		return simulationService.simulate(input);
+		try {
+			SimulationRead read = simulationService.simulate(input);
+			return Response.status(Response.Status.CREATED).entity(read).build();
+		} catch (NullPointerException | IllegalArgumentException e) {
+			throw new BadRequestException(e.getMessage());
+		}
 	}
 
 	@Override
