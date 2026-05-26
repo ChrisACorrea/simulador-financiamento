@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import br.gov.caixaverso.entities.abstractions.EntityBase;
+import br.gov.caixaverso.exceptions.DomainValidationException;
 import br.gov.caixaverso.valueobjects.MonetaryValue;
 import br.gov.caixaverso.valueobjects.Percentage;
 import jakarta.persistence.CascadeType;
@@ -64,21 +64,21 @@ public class Simulation extends EntityBase {
      */
     public Simulation(MonetaryValue initialAmount, Percentage monthlyInterestRate, Integer termMonths,
             Collection<CalculationMemory> memories) {
-        this.initialAmount = Objects.requireNonNull(initialAmount, "Valor inicial nao pode ser nulo");
-        this.monthlyInterestRate = Objects.requireNonNull(monthlyInterestRate, "Taxa de juros mensal nao pode ser nula");
-        this.termMonths = Objects.requireNonNull(termMonths, "Prazo em meses nao pode ser nulo");
+        this.initialAmount = requireNonNull(initialAmount, "Valor inicial nao pode ser nulo");
+        this.monthlyInterestRate = requireNonNull(monthlyInterestRate, "Taxa de juros mensal nao pode ser nula");
+        this.termMonths = requireNonNull(termMonths, "Prazo em meses nao pode ser nulo");
         if (termMonths <= 0) {
-            throw new IllegalArgumentException("Prazo em meses deve ser maior que 0");
+            throw new DomainValidationException("Prazo em meses deve ser maior que 0");
         }
 
-        Objects.requireNonNull(memories, "Lista de memoria de calculo nao pode ser nula");
+        requireNonNull(memories, "Lista de memoria de calculo nao pode ser nula");
         if (memories.isEmpty()) {
-            throw new IllegalArgumentException("Lista de memoria de calculo nao pode ser vazia");
+            throw new DomainValidationException("Lista de memoria de calculo nao pode ser vazia");
         }
 
         List<CalculationMemory> localMemories = new ArrayList<>(memories);
         localMemories.forEach(memory -> {
-            Objects.requireNonNull(memory, "Item da memoria de calculo nao pode ser nulo");
+            requireNonNull(memory, "Item da memoria de calculo nao pode ser nulo");
             memory.attachTo(this);
         });
 
@@ -125,7 +125,14 @@ public class Simulation extends EntityBase {
         return memories.stream()
                 .max(Comparator.comparing(CalculationMemory::getMonth))
                 .map(CalculationMemory::getFinalBalance)
-                .orElseThrow(() -> new IllegalArgumentException("Lista de memoria de calculo nao pode ser vazia"));
+                .orElseThrow(() -> new DomainValidationException("Lista de memoria de calculo nao pode ser vazia"));
+    }
+
+    private static <T> T requireNonNull(T value, String message) {
+        if (value == null) {
+            throw new DomainValidationException(message);
+        }
+        return value;
     }
     // endregion
 

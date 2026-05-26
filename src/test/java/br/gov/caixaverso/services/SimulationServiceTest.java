@@ -18,6 +18,8 @@ import br.gov.caixaverso.dtos.SimulationInputDTO;
 import br.gov.caixaverso.dtos.SimulationRead;
 import br.gov.caixaverso.entities.CalculationMemory;
 import br.gov.caixaverso.entities.Simulation;
+import br.gov.caixaverso.exceptions.DomainValidationException;
+import br.gov.caixaverso.exceptions.ResourceNotFoundException;
 import br.gov.caixaverso.repositories.abstractions.ISimulationRepository;
 import br.gov.caixaverso.valueobjects.MonetaryValue;
 import br.gov.caixaverso.valueobjects.Percentage;
@@ -72,7 +74,7 @@ class SimulationServiceTest {
 
         SimulationInputDTO input = new SimulationInputDTO(null, Percentage.from("1"), 12);
 
-        NullPointerException ex = assertThrows(NullPointerException.class, () -> service.simulate(input));
+        DomainValidationException ex = assertThrows(DomainValidationException.class, () -> service.simulate(input));
 
         assertEquals("Valor inicial nao pode ser nulo", ex.getMessage());
     }
@@ -85,7 +87,7 @@ class SimulationServiceTest {
 
         SimulationInputDTO input = new SimulationInputDTO(MonetaryValue.from("1000"), null, 12);
 
-        NullPointerException ex = assertThrows(NullPointerException.class, () -> service.simulate(input));
+        DomainValidationException ex = assertThrows(DomainValidationException.class, () -> service.simulate(input));
 
         assertEquals("Taxa de juros mensal nao pode ser nula", ex.getMessage());
     }
@@ -98,7 +100,7 @@ class SimulationServiceTest {
 
         SimulationInputDTO input = new SimulationInputDTO(MonetaryValue.from("1000"), Percentage.from("1"), null);
 
-        NullPointerException ex = assertThrows(NullPointerException.class, () -> service.simulate(input));
+        DomainValidationException ex = assertThrows(DomainValidationException.class, () -> service.simulate(input));
 
         assertEquals("Prazo em meses nao pode ser nulo", ex.getMessage());
     }
@@ -111,7 +113,7 @@ class SimulationServiceTest {
 
         SimulationInputDTO input = new SimulationInputDTO(MonetaryValue.from("1000"), Percentage.from("1"), 0);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.simulate(input));
+        DomainValidationException ex = assertThrows(DomainValidationException.class, () -> service.simulate(input));
 
         assertEquals("Prazo em meses deve ser maior que 0", ex.getMessage());
     }
@@ -122,7 +124,7 @@ class SimulationServiceTest {
         ISimulationRepository repository = org.mockito.Mockito.mock(ISimulationRepository.class);
         SimulationService service = new SimulationService(repository);
 
-        NullPointerException ex = assertThrows(NullPointerException.class, () -> service.simulate(null));
+        DomainValidationException ex = assertThrows(DomainValidationException.class, () -> service.simulate(null));
 
         assertEquals("Dados da simulacao nao podem ser nulos", ex.getMessage());
     }
@@ -179,7 +181,7 @@ class SimulationServiceTest {
         ISimulationRepository repository = org.mockito.Mockito.mock(ISimulationRepository.class);
         SimulationService service = new SimulationService(repository);
 
-        NullPointerException ex = assertThrows(NullPointerException.class, () -> service.getById(null));
+        DomainValidationException ex = assertThrows(DomainValidationException.class, () -> service.getById(null));
 
         assertEquals("Id da simulacao nao pode ser nulo", ex.getMessage());
     }
@@ -191,7 +193,7 @@ class SimulationServiceTest {
         SimulationService service = new SimulationService(repository);
         when(repository.findByIdOptional(99L)).thenReturn(Optional.empty());
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.getById(99L));
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> service.getById(99L));
 
         assertEquals("Simulacao nao encontrada para o id: 99", ex.getMessage());
     }
@@ -214,7 +216,7 @@ class SimulationServiceTest {
         ISimulationRepository repository = org.mockito.Mockito.mock(ISimulationRepository.class);
         SimulationService service = new SimulationService(repository);
 
-        NullPointerException ex = assertThrows(NullPointerException.class, () -> service.deleteById(null));
+        DomainValidationException ex = assertThrows(DomainValidationException.class, () -> service.deleteById(null));
 
         assertEquals("Id da simulacao nao pode ser nulo", ex.getMessage());
     }
@@ -226,7 +228,7 @@ class SimulationServiceTest {
         SimulationService service = new SimulationService(repository);
         doReturn(false).when(repository).deleteById(15L);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.deleteById(15L));
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> service.deleteById(15L));
 
         assertEquals("Simulacao nao encontrada para o id: 15", ex.getMessage());
     }

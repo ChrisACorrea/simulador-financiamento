@@ -2,12 +2,13 @@ package br.gov.caixaverso.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import br.gov.caixaverso.dtos.SimulationInputDTO;
 import br.gov.caixaverso.dtos.SimulationRead;
 import br.gov.caixaverso.entities.CalculationMemory;
 import br.gov.caixaverso.entities.Simulation;
+import br.gov.caixaverso.exceptions.DomainValidationException;
+import br.gov.caixaverso.exceptions.ResourceNotFoundException;
 import br.gov.caixaverso.repositories.abstractions.ISimulationRepository;
 import br.gov.caixaverso.services.abstractions.ISimulationService;
 import br.gov.caixaverso.valueobjects.MonetaryValue;
@@ -27,12 +28,12 @@ public class SimulationService implements ISimulationService {
 
     @Override
     public SimulationRead simulate(SimulationInputDTO input) {
-        Objects.requireNonNull(input, "Dados da simulacao nao podem ser nulos");
-        Objects.requireNonNull(input.valorInicial(), "Valor inicial nao pode ser nulo");
-        Objects.requireNonNull(input.taxaJurosMensal(), "Taxa de juros mensal nao pode ser nula");
-        Objects.requireNonNull(input.prazoMeses(), "Prazo em meses nao pode ser nulo");
+        requireNonNull(input, "Dados da simulacao nao podem ser nulos");
+        requireNonNull(input.valorInicial(), "Valor inicial nao pode ser nulo");
+        requireNonNull(input.taxaJurosMensal(), "Taxa de juros mensal nao pode ser nula");
+        requireNonNull(input.prazoMeses(), "Prazo em meses nao pode ser nulo");
         if (input.prazoMeses() <= 0) {
-            throw new IllegalArgumentException("Prazo em meses deve ser maior que 0");
+            throw new DomainValidationException("Prazo em meses deve ser maior que 0");
         }
 
         List<CalculationMemory> calculationMemories = new ArrayList<>();
@@ -62,22 +63,29 @@ public class SimulationService implements ISimulationService {
 
     @Override
     public SimulationRead getById(Long id) {
-        Objects.requireNonNull(id, "Id da simulacao nao pode ser nulo");
+        requireNonNull(id, "Id da simulacao nao pode ser nulo");
 
         Simulation simulation = simulationRepository.findByIdOptional(id)
-                .orElseThrow(() -> new IllegalArgumentException("Simulacao nao encontrada para o id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("Simulacao nao encontrada para o id: " + id));
 
         return SimulationRead.fromEntity(simulation);
     }
 
     @Override
     public void deleteById(Long id) {
-        Objects.requireNonNull(id, "Id da simulacao nao pode ser nulo");
+        requireNonNull(id, "Id da simulacao nao pode ser nulo");
 
         boolean deleted = simulationRepository.deleteById(id);
         if (!deleted) {
-            throw new IllegalArgumentException("Simulacao nao encontrada para o id: " + id);
+            throw new ResourceNotFoundException("Simulacao nao encontrada para o id: " + id);
         }
+    }
+
+    private static <T> T requireNonNull(T value, String message) {
+        if (value == null) {
+            throw new DomainValidationException(message);
+        }
+        return value;
     }
 
     private MonetaryValue calculateMonthlyInterestAmount(MonetaryValue initialBalance, Percentage monthlyRate) {

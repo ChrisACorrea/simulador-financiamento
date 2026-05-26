@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import br.gov.caixaverso.exceptions.DomainValidationException;
 import br.gov.caixaverso.valueobjects.MonetaryValue;
 
 class CalculationMemoryTest {
@@ -29,7 +30,7 @@ class CalculationMemoryTest {
     @Test
     @DisplayName("Deve lancar excecao para mes nulo")
     void shouldThrowWhenMonthIsNull() {
-        NullPointerException ex = assertThrows(NullPointerException.class,
+        DomainValidationException ex = assertThrows(DomainValidationException.class,
                 () -> new CalculationMemory(
                         null,
                         MonetaryValue.from("1000.00"),
@@ -41,7 +42,7 @@ class CalculationMemoryTest {
     @Test
     @DisplayName("Deve lancar excecao para saldo inicial nulo")
     void shouldThrowWhenInitialBalanceIsNull() {
-        NullPointerException ex = assertThrows(NullPointerException.class,
+        DomainValidationException ex = assertThrows(DomainValidationException.class,
                 () -> new CalculationMemory(
                         1,
                         null,
@@ -53,7 +54,7 @@ class CalculationMemoryTest {
     @Test
     @DisplayName("Deve lancar excecao para juro nulo")
     void shouldThrowWhenInterestAmountIsNull() {
-        NullPointerException ex = assertThrows(NullPointerException.class,
+        DomainValidationException ex = assertThrows(DomainValidationException.class,
                 () -> new CalculationMemory(
                         1,
                         MonetaryValue.from("1000.00"),

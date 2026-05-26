@@ -1,8 +1,7 @@
 package br.gov.caixaverso.entities;
 
-import java.util.Objects;
-
 import br.gov.caixaverso.entities.abstractions.EntityBase;
+import br.gov.caixaverso.exceptions.DomainValidationException;
 import br.gov.caixaverso.valueobjects.MonetaryValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,9 +54,9 @@ public class CalculationMemory extends EntityBase {
      * @param interestAmount valor de juros aplicado no mes
      */
     public CalculationMemory(Integer month, MonetaryValue initialBalance, MonetaryValue interestAmount) {
-        this.month = Objects.requireNonNull(month, "Mes nao pode ser nulo");
-        this.initialBalance = Objects.requireNonNull(initialBalance, "Saldo inicial nao pode ser nulo");
-        this.interestAmount = Objects.requireNonNull(interestAmount, "Juro nao pode ser nulo");
+        this.month = requireNonNull(month, "Mes nao pode ser nulo");
+        this.initialBalance = requireNonNull(initialBalance, "Saldo inicial nao pode ser nulo");
+        this.interestAmount = requireNonNull(interestAmount, "Juro nao pode ser nulo");
         this.finalBalance = initialBalance.add(interestAmount);
     }
     // endregion
@@ -87,6 +86,13 @@ public class CalculationMemory extends EntityBase {
     // region Associacao Interna
     void attachTo(Simulation simulation) {
         this.simulation = simulation;
+    }
+
+    private static <T> T requireNonNull(T value, String message) {
+        if (value == null) {
+            throw new DomainValidationException(message);
+        }
+        return value;
     }
     // endregion
 }

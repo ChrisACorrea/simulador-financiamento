@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import br.gov.caixaverso.exceptions.DomainValidationException;
 import br.gov.caixaverso.valueobjects.MonetaryValue;
 import br.gov.caixaverso.valueobjects.Percentage;
 
@@ -63,7 +64,7 @@ class SimulationTest {
     @Test
     @DisplayName("Deve lancar excecao para lista nula")
     void shouldThrowWhenMemoriesIsNull() {
-        NullPointerException ex = assertThrows(NullPointerException.class,
+        DomainValidationException ex = assertThrows(DomainValidationException.class,
                 () -> new Simulation(
                         MonetaryValue.from("1000.00"),
                         Percentage.from("1"),
@@ -78,7 +79,7 @@ class SimulationTest {
     void shouldThrowWhenMemoriesIsEmpty() {
         List<CalculationMemory> emptyMemories = List.of();
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+        DomainValidationException ex = assertThrows(DomainValidationException.class,
                 () -> new Simulation(
                         MonetaryValue.from("1000.00"),
                         Percentage.from("1"),
@@ -98,7 +99,7 @@ class SimulationTest {
                 MonetaryValue.from("10.00")));
         memories.add(null);
 
-        NullPointerException ex = assertThrows(NullPointerException.class,
+        DomainValidationException ex = assertThrows(DomainValidationException.class,
                 () -> new Simulation(
                         MonetaryValue.from("1000.00"),
                         Percentage.from("1"),
@@ -139,7 +140,7 @@ class SimulationTest {
                                 MonetaryValue.from("1000.00"),
                                 MonetaryValue.from("10.00"));
 
-                IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                DomainValidationException ex = assertThrows(DomainValidationException.class,
                                 () -> new Simulation(
                                                 MonetaryValue.from("1000.00"),
                                                 Percentage.from("1"),

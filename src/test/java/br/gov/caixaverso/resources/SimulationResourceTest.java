@@ -15,11 +15,11 @@ import org.junit.jupiter.api.Test;
 import br.gov.caixaverso.dtos.CalculationMemoryDTO;
 import br.gov.caixaverso.dtos.SimulationInputDTO;
 import br.gov.caixaverso.dtos.SimulationRead;
+import br.gov.caixaverso.exceptions.DomainValidationException;
+import br.gov.caixaverso.exceptions.ResourceNotFoundException;
 import br.gov.caixaverso.services.abstractions.ISimulationService;
 import br.gov.caixaverso.valueobjects.MonetaryValue;
 import br.gov.caixaverso.valueobjects.Percentage;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 
 class SimulationResourceTest {
@@ -50,7 +50,7 @@ class SimulationResourceTest {
         ISimulationService service = org.mockito.Mockito.mock(ISimulationService.class);
         SimulationResource resource = new SimulationResource(service);
 
-        BadRequestException ex = assertThrows(BadRequestException.class, () -> resource.simulate(null));
+        DomainValidationException ex = assertThrows(DomainValidationException.class, () -> resource.simulate(null));
 
         assertEquals("Dados da simulacao nao podem ser nulos", ex.getMessage());
         verifyNoInteractions(service);
@@ -87,13 +87,13 @@ class SimulationResourceTest {
     }
 
     @Test
-    @DisplayName("Deve mapear IllegalArgumentException para NotFound no getById")
+    @DisplayName("Deve propagar ResourceNotFoundException no getById")
     void shouldMapNotFoundWhenGetByIdFails() {
         ISimulationService service = org.mockito.Mockito.mock(ISimulationService.class);
         SimulationResource resource = new SimulationResource(service);
-        when(service.getById(99L)).thenThrow(new IllegalArgumentException("Simulacao nao encontrada para o id: 99"));
+        when(service.getById(99L)).thenThrow(new ResourceNotFoundException("Simulacao nao encontrada para o id: 99"));
 
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> resource.getById(99L));
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> resource.getById(99L));
 
         assertEquals("Simulacao nao encontrada para o id: 99", ex.getMessage());
     }
@@ -111,14 +111,14 @@ class SimulationResourceTest {
     }
 
     @Test
-    @DisplayName("Deve mapear IllegalArgumentException para NotFound no delete")
+    @DisplayName("Deve propagar ResourceNotFoundException no delete")
     void shouldMapNotFoundWhenDeleteFails() {
         ISimulationService service = org.mockito.Mockito.mock(ISimulationService.class);
         SimulationResource resource = new SimulationResource(service);
-        org.mockito.Mockito.doThrow(new IllegalArgumentException("Simulacao nao encontrada para o id: 15"))
+        org.mockito.Mockito.doThrow(new ResourceNotFoundException("Simulacao nao encontrada para o id: 15"))
                 .when(service).deleteById(15L);
 
-        NotFoundException ex = assertThrows(NotFoundException.class, () -> resource.deleteById(15L));
+        ResourceNotFoundException ex = assertThrows(ResourceNotFoundException.class, () -> resource.deleteById(15L));
 
         assertEquals("Simulacao nao encontrada para o id: 15", ex.getMessage());
     }
