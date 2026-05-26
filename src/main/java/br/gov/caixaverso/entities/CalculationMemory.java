@@ -14,7 +14,7 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "TB_CALCULATION_MEMORY", uniqueConstraints = {
-        @UniqueConstraint(name = "UK_CALC_MEMORY_SIM_MONTH", columnNames = { "SIMULATION_ID", "MONTH" })
+    @UniqueConstraint(name = "UK_CALC_MEMORY_SIM_MONTH", columnNames = { "SIMULATION_ID", "CALC_MONTH" })
 })
 /**
  * Item mensal da memoria de calculo de uma simulacao.
@@ -26,7 +26,7 @@ import jakarta.persistence.UniqueConstraint;
 public class CalculationMemory extends EntityBase {
 
     // region Estado Persistido
-    @Column(name = "MONTH", insertable = true, updatable = false, nullable = false)
+    @Column(name = "CALC_MONTH", insertable = true, updatable = false, nullable = false)
     private Integer month;
 
     @Column(name = "INITIAL_BALANCE", insertable = true, updatable = false, nullable = false, precision = 14, scale = 2)
